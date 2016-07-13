@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.hadoop.conf.Configuration;
@@ -14,12 +16,18 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.MasterNotRunningException;
 import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.TableNotFoundException;
 import org.apache.hadoop.hbase.ZooKeeperConnectionException;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Get;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.HTable;
+import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Logger;
+
 
 /**
  * 
@@ -27,24 +35,28 @@ import org.apache.log4j.Logger;
  *
  */
 
-public class HBaseDaoImpl implements HBaseDao {
+public class HBaseDaoImpl extends HBasePropreties implements HBaseDao{
 	
 	static Logger logger = Logger.getLogger(HBaseDaoImpl.class);
 	static Configuration conf = null;
+	static Connection conn = null;
+	static HBaseAdmin HBaseAdmin = null;
 	static {
 		InputStream is = null;
 		try {
-			is = new BufferedInputStream(new FileInputStream(new File("conf/HBaseConf.properties")));
+			is = new BufferedInputStream(new FileInputStream(new File("configration/HBaseConf.properties")));
 			Properties properties = new Properties();  
 			properties.load(is);
-			String zoo = properties.getProperty("hbase.zookeeper.quorum");
-			String port = properties.getProperty("hbase.zookeeper.property.clientPort");
+			String zoo = properties.getProperty(hbase_zookeeper_quorum);
+			String port = properties.getProperty(hbase_zookeeper_property_clientPort);
 			if (port == null || port.equals("")) {
 				port = "2181";
 			}
 			conf = HBaseConfiguration.create();
-			conf.set("hbase.zookeeper.quorum", zoo);
-			conf.set("hbase.zookeeper.property.clientPort", port);
+			conf.set(hbase_zookeeper_quorum, zoo);
+			conf.set(hbase_zookeeper_property_clientPort, port);
+			conn = ConnectionFactory.createConnection(conf);
+			HBaseAdmin = (HBaseAdmin) conn.getAdmin();
 		} catch (FileNotFoundException e) {
 			logger.error("未找到配置文件！");
 			e.printStackTrace();
@@ -55,88 +67,53 @@ public class HBaseDaoImpl implements HBaseDao {
 
 	@Override
 	public boolean createTable(String tableName, String[] columnFamily) {
-		Connection conn = null;
-		try{
-			conn = ConnectionFactory.createConnection(conf);
-			HBaseAdmin hBaseAdmin = (HBaseAdmin) conn.getAdmin();
+		
+		try{			
 			HTableDescriptor desc = new HTableDescriptor(TableName.valueOf(tableName));
 			//添加列簇
 			for (int i = 0; i < columnFamily.length; i++) {
 				desc.addFamily(new HColumnDescriptor(columnFamily[i]));
 			}
-			if(hBaseAdmin.tableExists("test")){
-				logger.info("表已存在！");
+			if(HBaseAdmin.tableExists(tableName)){
+				logger.info(tableName+"表已存在！");
 				return false;
 			}else{
-				hBaseAdmin.createTable(desc);
-				logger.info("成功创建表！");
+				HBaseAdmin.createTable(desc);
+				logger.info("成功创建表"+tableName+"！");
 				return true;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			if(null != conn){
-				try {
-					conn.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 		return false;
-		
-		
-	
-		
-		
-		/*HBaseAdmin admin;
+	}
+
+	@Override
+	public boolean addData(String tableName, String rowKey, String columnFamily,Map<String, String> data) {
 		try {
-			Connection con = ConnectionFactory.createConnection(conf);
-			
-			admin = new HBaseAdmin(conf);
-			HTableDescriptor desc = new HTableDescriptor(tableName);
-			for (int i = 0; i < columnFamily.length; i++) {
-				desc.addFamily(new HColumnDescriptor(columnFamily[i]));
+			HTable table = (HTable)conn.getTable(TableName.valueOf(tableName));
+			Put put = new Put(Bytes.toBytes(rowKey));
+			Iterator<Map.Entry<String, String>> iterator = data.entrySet().iterator();
+			while(iterator.hasNext()){
+				Map.Entry<String, String> kv = iterator.next();
+				put.addColumn(Bytes.toBytes(columnFamily), Bytes.toBytes(kv.getKey()), Bytes.toBytes(kv.getValue()));
 			}
-			if (admin.tableExists(tableName)) {
-				logger.error("表已存在！");
-				admin.close();
-				return false;
-			} else {
-				admin.createTable(desc);
-				logger.info("成功创建表！");
-				admin.close();
-				return true;
-			}
-		} catch (MasterNotRunningException e) {
-			logger.error("Hmaster未运行");
+			table.put(put);
+			logger.info("向表"+tableName+"插入了"+data.size()+"条数据！");
+		} catch (TableNotFoundException e) {
+			logger.error("未找到"+tableName+"表！");
 			e.printStackTrace();
-		} catch (ZooKeeperConnectionException e) {
-			logger.error("未能连接到Zookeeper");
-			e.printStackTrace();
+			return false;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
-			return false;*/
+		return true;
 	}
 
 	@Override
-	public boolean addData(String tableName, String rowKey, String columnFamily, String[] cf, String[] data) {
-
-		return false;
-	}
-
-	@Override
-	public boolean addData(String tableName, String rowKey, String columnFamily, String[] cf1, String[] data1,
-			String[] cf2, String[] data2) {
-
-		return false;
-	}
-
-	@Override
-	public Result search(String rowKey, String tableName) {
-
-		return null;
+	public Result search(String rowKey, String tableName) throws IOException {
+		return conn.getTable(TableName.valueOf(tableName)).get(new Get(Bytes.toBytes(rowKey)));
 	}
 
 	@Override
@@ -177,20 +154,19 @@ public class HBaseDaoImpl implements HBaseDao {
 
 	@Override
 	public boolean deleteTable(String tableName) {
-		HBaseAdmin admin = null;
 		try {
-			admin = new HBaseAdmin(conf);
-			admin.disableTable(tableName);
-			admin.deleteTable(tableName);
-			System.out.println(tableName + "is deleted!");
+			logger.info("正在删除表"+tableName+"......");
+			HBaseAdmin.disableTable(tableName);
+			HBaseAdmin.deleteTable(tableName);
+			logger.info(tableName+"表已删除!");
 		} catch (MasterNotRunningException e) {
-			// TODO Auto-generated catch block
+			logger.error("HMaster未运行！");
 			e.printStackTrace();
 		} catch (ZooKeeperConnectionException e) {
-			// TODO Auto-generated catch block
+			logger.error("未能连接到zookeeper！");
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			logger.error("删除表时发生读写异常！");
 			e.printStackTrace();
 		}
 		

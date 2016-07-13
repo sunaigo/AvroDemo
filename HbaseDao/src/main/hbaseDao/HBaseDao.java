@@ -2,6 +2,9 @@ package main.hbaseDao;
 
 import org.apache.hadoop.hbase.client.Result;
 
+import java.io.IOException;
+import java.util.Map;
+
 /**
  * 
  * @author sunyulong
@@ -14,13 +17,10 @@ public interface HBaseDao {
 	public boolean createTable(String tableName, String[] columnFamily);
 	
 	//添加数据
-	public boolean addData(String tableName , String rowKey , String columnFamily ,String [] cf,String [] data);
-	
-	public boolean addData(String tableName , String rowKey , String columnFamily ,
-			String [] cf1,String [] data1,String [] cf2,String [] data2);
+	public boolean addData(String tableName , String rowKey , String columnFamily ,Map<String, String> data);
 	
 	//查询指定rowkey的所有数据
-	public Result search (String rowKey , String tableName);
+	public Result search (String rowKey , String tableName) throws IOException;
 	
 	//scan整个表
 	public Result getResultScann(String tableName);

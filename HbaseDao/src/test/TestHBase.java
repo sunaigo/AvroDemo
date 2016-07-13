@@ -1,5 +1,7 @@
 package test;
 
+import java.util.HashMap;
+
 import main.hbaseDao.HBaseDao;
 import main.hbaseDao.HBaseDaoImpl;
 
@@ -13,7 +15,9 @@ public class TestHBase {
 
 	public static void main(String[] args) {
 		HBaseDao hd = new HBaseDaoImpl();
-		System.out.println(hd.createTable("t2", new String [] {"cf1","cf2"}));
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("addr", "乌干达");
+		hd.addData("t1", "000000", "cf1", map);
 	}
 
 }
