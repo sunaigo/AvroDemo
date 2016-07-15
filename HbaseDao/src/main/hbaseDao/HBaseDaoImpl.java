@@ -1,8 +1,5 @@
 package main.hbaseDao;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,31 +37,33 @@ import org.apache.log4j.Logger;
 
 public class HBaseDaoImpl extends HBasePropreties implements HBaseDao{
 	
-	static Logger logger = Logger.getLogger(HBaseDaoImpl.class);
-	static Configuration conf = null;
-	static Connection conn = null;
-	static HBaseAdmin HBaseAdmin = null;
+	private static Logger logger = Logger.getLogger(HBaseDaoImpl.class);
+	private static Configuration conf = new Configuration();
+	private static Connection conn = null;
+	private static HBaseAdmin HBaseAdmin = null;
 	static {
-		InputStream is = null;
 		try {
-			logger.info("正在加载配置文件...");
-			is = new BufferedInputStream(new FileInputStream(new File("configration/HBaseConf.properties")));
-			Properties properties = new Properties();  
+			if (logger.isDebugEnabled())
+			    logger.debug("starting to load config file...");
+			InputStream is = ClassLoader.getSystemResourceAsStream("configration/HBaseConf.properties");
+			Properties properties = new Properties();
 			properties.load(is);
-			String zoo = properties.getProperty(hbase_zookeeper_quorum);
-			String port = properties.getProperty(hbase_zookeeper_property_clientPort);
+			String zoo = properties.getProperty(HBASE_ZOOKEEPER_QUORUM);
+			String port = properties.getProperty(HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT);
 			if (port == null || port.equals("")) {
 				port = "2181";
 			}
 			conf = HBaseConfiguration.create();
-			conf.set(hbase_zookeeper_quorum, zoo);
-			conf.set(hbase_zookeeper_property_clientPort, port);
+			conf.set(HBASE_ZOOKEEPER_QUORUM, zoo);
+			conf.set(HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT, port);
 			conn = ConnectionFactory.createConnection(conf);
-			logger.info("成功加载配置文件，正在初始化HBaseAdmin...");
+            if (logger.isDebugEnabled())
+			    logger.debug("Load config success ! starting to init HBaseAdmin...");
 			HBaseAdmin = (HBaseAdmin) conn.getAdmin();
-			logger.info("初始化HBaseAdmin完成！");
+            if (logger.isDebugEnabled())
+			    logger.debug("init HbaseAdmin success!");
 		} catch (FileNotFoundException e) {
-			logger.error("未找到配置文件！");
+			logger.error("config not found!");
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -77,15 +76,16 @@ public class HBaseDaoImpl extends HBasePropreties implements HBaseDao{
 		try{			
 			HTableDescriptor desc = new HTableDescriptor(TableName.valueOf(tableName));
 			//添加列簇
-			for (int i = 0; i < columnFamily.length; i++) {
-				desc.addFamily(new HColumnDescriptor(columnFamily[i]));
+			for (String cf : columnFamily) {
+				desc.addFamily(new HColumnDescriptor(cf));
 			}
 			if(HBaseAdmin.tableExists(tableName)){
-				logger.error(tableName+"表已存在！");
+				logger.error("table "+tableName+" exits！");
 				return false;
 			}else{
 				HBaseAdmin.createTable(desc);
-				logger.info("成功创建表"+tableName+"！");
+                if (logger.isDebugEnabled())
+				    logger.debug("create table "+tableName+" success！");
 				return true;
 			}
 		}catch(Exception e){
@@ -106,14 +106,15 @@ public class HBaseDaoImpl extends HBasePropreties implements HBaseDao{
 			}
 			table.put(put);
 		} catch (TableNotFoundException e) {
-			logger.error("未找到"+tableName+"表！");
+			logger.error("table "+tableName+" net found!");
 			e.printStackTrace();
 			return false;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
-		logger.info("向表"+tableName+"插入了"+data.size()+"条数据！");
+        if (logger.isDebugEnabled())
+		    logger.debug("insert into "+tableName+" data num "+data.size());
 		return true;
 	}
 
@@ -175,8 +176,10 @@ public class HBaseDaoImpl extends HBasePropreties implements HBaseDao{
 		} catch (IOException e) {			
 			e.printStackTrace();
 			return false;
-		}	
-		logger.info(tableName+"的"+columnFamily+"列族的"+columnName+"列已被更新！");
+		}
+
+        if (logger.isDebugEnabled())
+		    logger.info(tableName+"'s "+columnFamily+" columnFamily "+columnName+" be updated!");
 		return true;
 	}
 
@@ -204,7 +207,8 @@ public class HBaseDaoImpl extends HBasePropreties implements HBaseDao{
 			e1.printStackTrace();
 			return false;
 		}
-		logger.info(tableName+"的"+columnFamily+"列族的"+columnName+"列已被删除！");
+        if (logger.isDebugEnabled())
+		    logger.debug(tableName+"'s "+columnFamily+"'s "+columnName+" is deleted!");
 		return true;
 	}
 
@@ -215,8 +219,9 @@ public class HBaseDaoImpl extends HBasePropreties implements HBaseDao{
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
-		}		
-		logger.info(tableName+"的"+columnFamily+"列族已被删除！");
+		}
+        if (logger.isDebugEnabled())
+		    logger.debug(tableName+"'s "+columnFamily+" is deleted!");
 		return true;
 
 	}
@@ -224,20 +229,21 @@ public class HBaseDaoImpl extends HBasePropreties implements HBaseDao{
 	@Override
 	public boolean deleteTable(String tableName) {
 		try {
-			logger.info("正在删除表"+tableName+"......");
+            if (logger.isDebugEnabled())
+			    logger.debug("starting to delete "+tableName+"......");
 			HBaseAdmin.disableTable(tableName);
 			HBaseAdmin.deleteTable(tableName);
-			logger.info(tableName+"表已删除!");
+            if (logger.isDebugEnabled())
+			    logger.debug(tableName+"is deleted!");
 		} catch (MasterNotRunningException e) {
-			logger.error("HMaster未运行！");
+			logger.error("HMaster not run！");
 			e.printStackTrace();
 			return false;
 		} catch (ZooKeeperConnectionException e) {
-			logger.error("未能连接到zookeeper！");
+			logger.error("can't connected with zookeeper！");
 			e.printStackTrace();
 			return false;
 		} catch (IOException e) {
-			logger.error("删除表时发生读写异常！");
 			e.printStackTrace();
 			return false;
 		}		

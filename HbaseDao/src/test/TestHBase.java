@@ -1,5 +1,3 @@
-package test;
-
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -23,8 +21,8 @@ public class TestHBase {
 
 	public static void main(String[] args) throws IOException {
 		HBaseDao hd = new HBaseDaoImpl();
-		//hd.createTable("t1", new String[]{"cf1","cf2"});	
-		hd.deleteTable("t1");
+		hd.createTable("t1", new String[]{"cf1","cf2"});
+//		hd.deleteTable("t1");
 		/*
 		HashMap<String,String> cf1 = new HashMap<String, String>();
 		cf1.put("name", "列宁");

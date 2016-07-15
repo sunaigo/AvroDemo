@@ -1,6 +1,6 @@
 package main.hbaseDao;
 
 public class HBasePropreties {
-	public static final String hbase_zookeeper_quorum = "hbase.zookeeper.quorum";
-	public static final String hbase_zookeeper_property_clientPort = "hbase.zookeeper.property.clientPort";
+	public static final String HBASE_ZOOKEEPER_QUORUM = "hbase.zookeeper.quorum";
+	public static final String HBASE_ZOOKEEPER_PROPERTY_CLIENTPORT = "hbase.zookeeper.property.clientPort";
 }

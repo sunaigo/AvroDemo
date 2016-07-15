@@ -34,7 +34,7 @@ public interface HBaseDao {
 	//更新一条数据
 	public boolean update(String tableName, String rowKey,String columnFamily, String columnName, String value);
 	
-	//查询制定数据的多个版本
+	//查询指定数据的多个版本
 	public Result getResultByVersion(String tableName, String rowKey,String columnFamily, String columnName);
 	
 	//删除指定列
