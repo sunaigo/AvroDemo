@@ -47,6 +47,7 @@ public class SendDataImpl extends ClientProperties implements SendData {
             start = System.currentTimeMillis();
             proxy.sendMessage(message);
             end = System.currentTimeMillis();
+            client.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
