@@ -13,8 +13,8 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
   private static final long serialVersionUID = -4817994292548549034L;
   public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"message\",\"namespace\":\"main.data\",\"fields\":[{\"name\":\"name\",\"type\":\"string\"},{\"name\":\"content\",\"type\":\"string\"},{\"name\":\"timestmp\",\"type\":\"long\"}]}");
   public static org.apache.avro.Schema getClassSchema() { return SCHEMA$; }
-  @Deprecated public CharSequence name;
-  @Deprecated public CharSequence content;
+  @Deprecated public java.lang.CharSequence name;
+  @Deprecated public java.lang.CharSequence content;
   @Deprecated public long timestmp;
 
   /**
@@ -30,7 +30,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * @param content The new value for content
    * @param timestmp The new value for timestmp
    */
-  public message(CharSequence name, CharSequence content, Long timestmp) {
+  public message(java.lang.CharSequence name, java.lang.CharSequence content, java.lang.Long timestmp) {
     this.name = name;
     this.content = content;
     this.timestmp = timestmp;
@@ -38,7 +38,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
   // Used by DatumWriter.  Applications should not call.
-  public Object get(int field$) {
+  public java.lang.Object get(int field$) {
     switch (field$) {
     case 0: return name;
     case 1: return content;
@@ -49,11 +49,11 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
 
   // Used by DatumReader.  Applications should not call.
   @SuppressWarnings(value="unchecked")
-  public void put(int field$, Object value$) {
+  public void put(int field$, java.lang.Object value$) {
     switch (field$) {
-    case 0: name = (CharSequence)value$; break;
-    case 1: content = (CharSequence)value$; break;
-    case 2: timestmp = (Long)value$; break;
+    case 0: name = (java.lang.CharSequence)value$; break;
+    case 1: content = (java.lang.CharSequence)value$; break;
+    case 2: timestmp = (java.lang.Long)value$; break;
     default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -62,7 +62,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Gets the value of the 'name' field.
    * @return The value of the 'name' field.
    */
-  public CharSequence getName() {
+  public java.lang.CharSequence getName() {
     return name;
   }
 
@@ -70,7 +70,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Sets the value of the 'name' field.
    * @param value the value to set.
    */
-  public void setName(CharSequence value) {
+  public void setName(java.lang.CharSequence value) {
     this.name = value;
   }
 
@@ -78,7 +78,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Gets the value of the 'content' field.
    * @return The value of the 'content' field.
    */
-  public CharSequence getContent() {
+  public java.lang.CharSequence getContent() {
     return content;
   }
 
@@ -86,7 +86,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Sets the value of the 'content' field.
    * @param value the value to set.
    */
-  public void setContent(CharSequence value) {
+  public void setContent(java.lang.CharSequence value) {
     this.content = value;
   }
 
@@ -94,7 +94,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Gets the value of the 'timestmp' field.
    * @return The value of the 'timestmp' field.
    */
-  public Long getTimestmp() {
+  public java.lang.Long getTimestmp() {
     return timestmp;
   }
 
@@ -102,7 +102,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Sets the value of the 'timestmp' field.
    * @param value the value to set.
    */
-  public void setTimestmp(Long value) {
+  public void setTimestmp(java.lang.Long value) {
     this.timestmp = value;
   }
 
@@ -110,8 +110,8 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * Creates a new message RecordBuilder.
    * @return A new message RecordBuilder
    */
-  public static Builder newBuilder() {
-    return new Builder();
+  public static main.data.message.Builder newBuilder() {
+    return new main.data.message.Builder();
   }
 
   /**
@@ -119,8 +119,8 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * @param other The existing builder to copy.
    * @return A new message RecordBuilder
    */
-  public static Builder newBuilder(Builder other) {
-    return new Builder(other);
+  public static main.data.message.Builder newBuilder(main.data.message.Builder other) {
+    return new main.data.message.Builder(other);
   }
 
   /**
@@ -128,8 +128,8 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
    * @param other The existing instance to copy.
    * @return A new message RecordBuilder
    */
-  public static Builder newBuilder(message other) {
-    return new Builder(other);
+  public static main.data.message.Builder newBuilder(main.data.message other) {
+    return new main.data.message.Builder(other);
   }
 
   /**
@@ -138,8 +138,8 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
   public static class Builder extends org.apache.avro.specific.SpecificRecordBuilderBase<message>
     implements org.apache.avro.data.RecordBuilder<message> {
 
-    private CharSequence name;
-    private CharSequence content;
+    private java.lang.CharSequence name;
+    private java.lang.CharSequence content;
     private long timestmp;
 
     /** Creates a new Builder */
@@ -151,7 +151,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
      * Creates a Builder by copying an existing Builder.
      * @param other The existing Builder to copy.
      */
-    private Builder(Builder other) {
+    private Builder(main.data.message.Builder other) {
       super(other);
       if (isValidValue(fields()[0], other.name)) {
         this.name = data().deepCopy(fields()[0].schema(), other.name);
@@ -171,7 +171,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
      * Creates a Builder by copying an existing message instance
      * @param other The existing instance to copy.
      */
-    private Builder(message other) {
+    private Builder(main.data.message other) {
             super(SCHEMA$);
       if (isValidValue(fields()[0], other.name)) {
         this.name = data().deepCopy(fields()[0].schema(), other.name);
@@ -191,7 +191,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Gets the value of the 'name' field.
       * @return The value.
       */
-    public CharSequence getName() {
+    public java.lang.CharSequence getName() {
       return name;
     }
 
@@ -200,7 +200,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'name'.
       * @return This builder.
       */
-    public Builder setName(CharSequence value) {
+    public main.data.message.Builder setName(java.lang.CharSequence value) {
       validate(fields()[0], value);
       this.name = value;
       fieldSetFlags()[0] = true;
@@ -220,7 +220,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Clears the value of the 'name' field.
       * @return This builder.
       */
-    public Builder clearName() {
+    public main.data.message.Builder clearName() {
       name = null;
       fieldSetFlags()[0] = false;
       return this;
@@ -230,7 +230,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Gets the value of the 'content' field.
       * @return The value.
       */
-    public CharSequence getContent() {
+    public java.lang.CharSequence getContent() {
       return content;
     }
 
@@ -239,7 +239,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'content'.
       * @return This builder.
       */
-    public Builder setContent(CharSequence value) {
+    public main.data.message.Builder setContent(java.lang.CharSequence value) {
       validate(fields()[1], value);
       this.content = value;
       fieldSetFlags()[1] = true;
@@ -259,7 +259,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Clears the value of the 'content' field.
       * @return This builder.
       */
-    public Builder clearContent() {
+    public main.data.message.Builder clearContent() {
       content = null;
       fieldSetFlags()[1] = false;
       return this;
@@ -269,7 +269,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Gets the value of the 'timestmp' field.
       * @return The value.
       */
-    public Long getTimestmp() {
+    public java.lang.Long getTimestmp() {
       return timestmp;
     }
 
@@ -278,7 +278,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
       * @param value The value of 'timestmp'.
       * @return This builder.
       */
-    public Builder setTimestmp(long value) {
+    public main.data.message.Builder setTimestmp(long value) {
       validate(fields()[2], value);
       this.timestmp = value;
       fieldSetFlags()[2] = true;
@@ -298,7 +298,7 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
       * Clears the value of the 'timestmp' field.
       * @return This builder.
       */
-    public Builder clearTimestmp() {
+    public main.data.message.Builder clearTimestmp() {
       fieldSetFlags()[2] = false;
       return this;
     }
@@ -307,9 +307,9 @@ public class message extends org.apache.avro.specific.SpecificRecordBase impleme
     public message build() {
       try {
         message record = new message();
-        record.name = fieldSetFlags()[0] ? this.name : (CharSequence) defaultValue(fields()[0]);
-        record.content = fieldSetFlags()[1] ? this.content : (CharSequence) defaultValue(fields()[1]);
-        record.timestmp = fieldSetFlags()[2] ? this.timestmp : (Long) defaultValue(fields()[2]);
+        record.name = fieldSetFlags()[0] ? this.name : (java.lang.CharSequence) defaultValue(fields()[0]);
+        record.content = fieldSetFlags()[1] ? this.content : (java.lang.CharSequence) defaultValue(fields()[1]);
+        record.timestmp = fieldSetFlags()[2] ? this.timestmp : (java.lang.Long) defaultValue(fields()[2]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

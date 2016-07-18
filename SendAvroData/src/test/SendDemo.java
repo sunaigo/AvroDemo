@@ -10,8 +10,6 @@ import java.io.*;
 public class SendDemo {
     public static void main(String [] args){
         SendData send = new SendDataImpl();
-        for(int i = 0 ; i < 100 ; i ++){
-            send.sendData(i+"","zhangfei");
-        }
+        send.sendData("张飞","乌干达");
     }
 }

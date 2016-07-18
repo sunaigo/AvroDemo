@@ -29,9 +29,6 @@ public class ReceiveData implements messageProtocol {
             }
             dataFileWriter.append(message);
             dataFileWriter.close();
-            String name = (String) message.getName();
-            String content = (String) message.getContent();
-            long time = message.getTimestmp();
         } catch (IOException e) {
             e.printStackTrace();
         }
